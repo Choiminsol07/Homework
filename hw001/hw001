@@ -1,0 +1,125 @@
+import turtle
+
+# BMI 계산 함수
+def get_bmi(height, weight):
+    height_m = height / 100
+    bmi = weight / (height_m * height_m)
+    return bmi
+
+
+# BMI
+def get_result(bmi):
+    if bmi < 18.5:
+        return "저체중"
+    elif bmi < 23:
+        return "정상"
+    elif bmi < 25:
+        return "과체중"
+    else:
+        return "비만"
+
+
+file = open("C:/Users/LG/Desktop/health.txt", "r", encoding="utf-8")
+
+# 파일 읽기
+#file = open(r"C:\Users\LG\Desktop\Homework\hw001.txt", "r", encoding="utf-8")
+
+people = []
+
+for line in file:
+    data = line.split()
+
+    if len(data) == 0:
+        continue
+
+    if data[0] == "전화번호":
+        continue
+
+    phone = data[0]
+    name = data[1]
+    height = float(data[2])
+    weight = float(data[3])
+
+    bmi = get_bmi(height, weight)
+    result = get_result(bmi)
+
+    people.append([phone, name, height, weight, bmi, result])
+
+file.close()
+
+
+# Turtle
+screen = turtle.Screen()
+screen.setup(900, 600)
+screen.title("BMI 프로그램")
+
+pen = turtle.Turtle()
+pen.speed(0)
+pen.penup()
+
+
+# 제목
+titles = ["전화번호", "이름", "키(cm)", "몸무게(kg)", "BMI", "소견"]
+
+# 각 열의 너비
+widths = [180, 100, 100, 120, 100, 120]
+
+row_height = 40
+
+start_x = -360
+start_y = 200
+
+
+def draw_cell(x, y, width, height, text):
+    pen.goto(x, y)
+    pen.pendown()
+
+    for i in range(2):
+        pen.forward(width)
+        pen.right(90)
+        pen.forward(height)
+        pen.right(90)
+
+    pen.penup()
+
+    pen.goto(x + width / 2, y - height / 2 - 7)
+    pen.write(str(text), align="center", font=("Arial", 11, "normal"))
+
+
+x = start_x
+
+for i in range(len(titles)):
+    draw_cell(x, start_y, widths[i], row_height, titles[i])
+    x = x + widths[i]
+
+
+# 사람 정보 출력
+y = start_y - row_height
+
+for person in people:
+    phone = person[0]
+    name = person[1]
+    height = person[2]
+    weight = person[3]
+    bmi = person[4]
+    result = person[5]
+
+    row = [
+        phone,
+        name,
+        int(height),
+        int(weight),
+        round(bmi, 1),
+        result
+    ]
+
+    x = start_x
+
+    for i in range(len(row)):
+        draw_cell(x, y, widths[i], row_height, row[i])
+        x = x + widths[i]
+
+    y = y - row_height
+
+
+turtle.done()
